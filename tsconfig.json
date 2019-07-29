@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "*": ["types/*"] },
+    "target": "es2017",
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "outDir": "build",
+    "await-promise": true,
+    "lib": [ "es6", "dom" ],
+    "types": [
+      "chrome",
+      "jQuery"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

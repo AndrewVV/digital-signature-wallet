@@ -1,0 +1,15 @@
+body {
+    background-color:#F0F0F0;
+    padding: 1em;
+    font-family: 'Raleway','Source Sans Pro', 'Arial';
+}
+input {
+    padding:1px;
+    width: 90%;
+    margin-bottom: 1em;
+}
+button {
+    margin: 1em 0;
+    padding: 0.5em 4em;
+    display:block;
+}

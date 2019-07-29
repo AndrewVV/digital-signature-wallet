@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="/src/style/popup.css" rel="stylesheet">
+</head>
+<body>
+    <script src="../build/popup.js"></script>
+    <h4>First digital signature wallet</h4>
+    <div>
+        <p>Enter your password:</p>
+        <input id="password" type="text" placeholder="Password"/>
+    </div>
+    <p></p>
+    <div>
+        <input id="fileInput" type="file">
+    </div>
+    <p></p>
+    <p></p>
+    <!-- <div>
+        <button id="generate-mnemonic">Generate Strong Mnemonic</button>
+        <p>Mnemonic:</p>
+        <p id="mnemonic"></p>
+    </div> -->
+    <hr></hr>
+    <p></p>
+    <div>
+        <button id="open-wallet">Open your wallet</button>
+        <p id="open-wallet-done"></p>
+    </div>
+    <p></p>
+    <p></p>
+    <div >
+        <select id="wallet-interface">
+            <option value="ethtest">Ethereum Testnet</option>
+            <option value="eth">Ethereum</option>
+            <!-- <option value="ltctest">Litecoin Testnet</option>
+            <option value="btctest">Bitcoin Testnet</option>
+            <option value="bch">Bitcoin Cash</option>
+            <option value="bchtest">Bitcoin Cash Testnet</option>
+            <option value="etc">Ethereum Classic</option>
+            <option value="ltc">Litecoin</option>
+            <option value="dashtest">DASH Testnet</option>
+            <option value="dash">Dash</option>
+            <option value="btc">Bitcoin</option>
+            <option value="ltc">Litecoin</option>
+            <option value="erc20">ERC20</option> -->
+        </select>
+    </div>
+    <p></p>
+    <div>
+        <button id="showaddress">Show Address</button>
+        <p>Address:</p>
+        <p id="address"></p>
+    </div>   
+    <p></p>
+    <hr></hr>
+    <p></p> 
+    <div>
+        <button id="get-balance">Get Balance</button>
+        <p>Balance:</p>
+        <p id="balance"></p>
+    </div>
+    <p></p>
+    <hr></hr>
+    <p></p>
+    <div>
+    <input id="receiver" type="text" placeholder="Receiver"/>
+    <input id="value" type="text" placeholder="Value"/>
+    <!-- <p>Рекомендуемая цена газа:</p>
+    <p id="gaspriseadvise"></p> -->
+    <input id="gasprise" type="text" placeholder="Gas prise"/>
+    <button id="send">SEND</button>
+    <p>TxHash:</p>
+    <p id="txhash"></p>
+    </div>    
+</body>
+</html>
