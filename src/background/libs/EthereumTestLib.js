@@ -1,5 +1,6 @@
 let Web3 = require('web3');
 let EthereumTx  = require('ethereumjs-tx');
+let ethereumjsUtil = require('ethereumjs-util')
 let keccakLib = require('keccak');
 const NonceService = require('../core/services/NonceService');
 const BigNumberHelper = require('../core/helpers/BigNumberHelper');
@@ -29,14 +30,51 @@ class EthereumTestLibClass{
         })
     }
 
+    privKeyToAddress(privKey) {
+        return new Promise(async(resolve,reject)=>{
+            try{
+                privKey = "0x"+privKey
+                let address = await ethereumjsUtil.privateToAddress(privKey)
+                address = address.toString('hex')
+                address = "0x"+address;
+                console.log(address)
+                return resolve(address);
+            }catch(e){
+                return reject(e);
+            }
+        })
+    }
+
+    getAddress(){
+        return new Promise(async(resolve,reject)=>{
+            try{
+                let privKey = await new Promise((resolve,reject) => {
+                    chrome.storage.local.get(['privatKey'], response => {
+                        resolve(response)
+                    });            	
+                }) 
+                let address = await this.privKeyToAddress(privKey.privatKey)
+                return resolve(address);
+            }catch (e) {
+                return reject(e);
+            }
+        });
+    }  
+
     getBalance(raw=true){
         return new Promise(async(resolve,reject)=>{
             try{
-                let address = await this.generateAddAndPriv.generateAddress("ETH");
+                let privKey = await new Promise((resolve,reject) => {
+                    chrome.storage.local.get(['privatKey'], response => {
+                        resolve(response)
+                    });            	
+                }) 
+                let address = await this.privKeyToAddress(privKey.privatKey)
                 let balance = await this.web3.eth.getBalance(address);
                 if(!raw){
                     balance = this.toDecimals(balance);
                 }
+                balance = balance+" ETH testnet"
                 return resolve(balance);
             }catch (e) {
                 return reject(e);
@@ -47,8 +85,15 @@ class EthereumTestLibClass{
     sendTransaction(to,value,gasPrice){
         return new Promise(async(resolve,reject)=>{
             try{
-                let userAddress = await this.generateAddAndPriv.generateAddress("ETH");
-                let userPrivateKey = await this.generateAddAndPriv.generatePrivKey("ETH");
+                let privKey = await new Promise((resolve,reject) => {
+                    chrome.storage.local.get(['privatKey'], response => {
+                        resolve(response)
+                    });            	
+                }) 
+                let userPrivateKey = privKey.privatKey;
+                let userAddress = await this.privKeyToAddress(privKey.privatKey)
+               // let userAddress = await this.generateAddAndPriv.generateAddress("ETH");
+                
                 if(userAddress===to){
                     throw new Error('To and From Addresses are the same');
                 }

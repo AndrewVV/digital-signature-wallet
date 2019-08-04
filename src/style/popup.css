@@ -1,6 +1,7 @@
 body {
     background-color:#F0F0F0;
     padding: 1em;
+    min-width: 324px;
     font-family: 'Raleway','Source Sans Pro', 'Arial';
 }
 input {

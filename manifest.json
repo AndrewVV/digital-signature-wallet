@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Digital Signature Wallet",
   "description": "First digital signature wallet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "default_locale": "en",
   "icons": {
     "128": "img/icon.png"
@@ -25,5 +25,5 @@
   "web_accessible_resources": [
     "img/*.png"
   ],
-  "content_security_policy": "script-src 'self' https://www.google-analytics.com https://code.jquery.com https://cdnjs.cloudflare.com https://use.fontawesome.com 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

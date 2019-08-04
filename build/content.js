@@ -20984,7 +20984,7 @@ try {
 /*!*************************************************!*\
   !*** ../node_modules/svelte/internal/index.mjs ***!
   \*************************************************/
-/*! exports provided: SvelteComponent, SvelteComponentDev, SvelteElement, add_attribute, add_classes, add_flush_callback, add_location, add_render_callback, add_resize_listener, add_transform, afterUpdate, append, assign, attr, beforeUpdate, bind, binding_callbacks, blank_object, bubble, check_outros, children, claim_element, claim_text, clear_loops, createEventDispatcher, create_animation, create_bidirectional_transition, create_in_transition, create_out_transition, create_slot, create_ssr_component, current_component, custom_event, debug, destroy_block, destroy_component, destroy_each, detach, detach_after, detach_before, detach_between, dirty_components, each, element, empty, escape, escaped, exclude_internal_props, fix_and_destroy_block, fix_and_outro_and_destroy_block, fix_position, flush, getContext, get_binding_group_value, get_slot_changes, get_slot_context, get_spread_update, get_store_value, globals, group_outros, handle_promise, identity, init, insert, intros, invalid_attribute_name_character, is_client, is_function, is_promise, listen, loop, measure, missing_component, mount_component, noop, not_equal, now, object_without_properties, onDestroy, onMount, once, outro_and_destroy_block, prevent_default, raf, run, run_all, safe_not_equal, schedule_update, select_multiple_value, select_option, select_options, select_value, setContext, set_attributes, set_current_component, set_custom_element_data, set_data, set_input_type, set_now, set_raf, set_style, space, spread, stop_propagation, subscribe, svg_element, text, tick, time_ranges_to_array, to_number, toggle_class, transition_in, transition_out, update_keyed_each, validate_component, validate_store, xlink_attr */
+/*! exports provided: SvelteComponent, SvelteComponentDev, SvelteElement, add_attribute, add_classes, add_flush_callback, add_location, add_render_callback, add_resize_listener, add_transform, afterUpdate, append, assign, attr, beforeUpdate, bind, binding_callbacks, blank_object, bubble, check_outros, children, claim_element, claim_text, clear_loops, component_subscribe, createEventDispatcher, create_animation, create_bidirectional_transition, create_in_transition, create_out_transition, create_slot, create_ssr_component, current_component, custom_event, debug, destroy_block, destroy_component, destroy_each, detach, detach_after, detach_before, detach_between, dirty_components, each, element, empty, escape, escaped, exclude_internal_props, fix_and_destroy_block, fix_and_outro_and_destroy_block, fix_position, flush, getContext, get_binding_group_value, get_slot_changes, get_slot_context, get_spread_update, get_store_value, globals, group_outros, handle_promise, identity, init, insert, intros, invalid_attribute_name_character, is_client, is_function, is_promise, listen, loop, measure, missing_component, mount_component, noop, not_equal, now, null_to_empty, object_without_properties, onDestroy, onMount, once, outro_and_destroy_block, prevent_default, raf, run, run_all, safe_not_equal, schedule_update, select_multiple_value, select_option, select_options, select_value, setContext, set_attributes, set_current_component, set_custom_element_data, set_data, set_input_type, set_now, set_raf, set_style, space, spread, stop_propagation, subscribe, svg_element, text, tick, time_ranges_to_array, to_number, toggle_class, transition_in, transition_out, update_keyed_each, validate_component, validate_store, xlink_attr */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21013,6 +21013,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "claim_element", function() { return claim_element; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "claim_text", function() { return claim_text; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear_loops", function() { return clear_loops; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "component_subscribe", function() { return component_subscribe; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventDispatcher", function() { return createEventDispatcher; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_animation", function() { return create_animation; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_bidirectional_transition", function() { return create_bidirectional_transition; });
@@ -21066,6 +21067,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "noop", function() { return noop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "not_equal", function() { return not_equal; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "now", function() { return now; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "null_to_empty", function() { return null_to_empty; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "object_without_properties", function() { return object_without_properties; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onDestroy", function() { return onDestroy; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMount", function() { return onMount; });
@@ -21145,11 +21147,17 @@ function validate_store(store, name) {
         throw new Error(`'${name}' is not a store with a 'subscribe' method`);
     }
 }
-function subscribe(component, store, callback) {
+function subscribe(store, callback) {
     const unsub = store.subscribe(callback);
-    component.$$.on_destroy.push(unsub.unsubscribe
-        ? () => unsub.unsubscribe()
-        : unsub);
+    return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+function get_store_value(store) {
+    let value;
+    subscribe(store, _ => value = _)();
+    return value;
+}
+function component_subscribe(component, store, callback) {
+    component.$$.on_destroy.push(subscribe(store, callback));
 }
 function create_slot(definition, ctx, fn) {
     if (definition) {
@@ -21183,12 +21191,15 @@ function once(fn) {
         fn.call(this, ...args);
     };
 }
+function null_to_empty(value) {
+    return value == null ? '' : value;
+}
 
 const is_client = typeof window !== 'undefined';
 let now = is_client
     ? () => window.performance.now()
     : () => Date.now();
-let raf = cb => requestAnimationFrame(cb);
+let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
 // used internally for testing
 function set_now(fn) {
     now = fn;
@@ -22249,23 +22260,10 @@ function create_ssr_component(fn) {
         $$render
     };
 }
-/**
- * Get the current value from a store by subscribing and immediately unsubscribing.
- * @param store readable
- */
-function get_store_value(store) {
-    let value;
-    const unsubscribe = store.subscribe(_ => value = _);
-    if (unsubscribe.unsubscribe)
-        unsubscribe.unsubscribe();
-    else
-        unsubscribe();
-    return value;
-}
-function add_attribute(name, value) {
-    if (!value)
+function add_attribute(name, value, boolean) {
+    if (value == null || (boolean && !value))
         return '';
-    return ` ${name}${value === true ? '' : `=${typeof value === 'string' ? JSON.stringify(value) : `"${value}"`}`}`;
+    return ` ${name}${value === true ? '' : `=${typeof value === 'string' ? JSON.stringify(escape(value)) : `"${value}"`}`}`;
 }
 function add_classes(classes) {
     return classes ? ` class="${classes}"` : ``;
@@ -22830,9 +22828,9 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "../node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _class_endorseManager_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../class.endorseManager.js */ "./content/class.endorseManager.js");
-/* harmony import */ var _Users_andrew_Desktop_Digital_Signature_Wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./content/widget/widget.svelte.css */ "./content/widget/widget.svelte.css");
-/* harmony import */ var _Users_andrew_Desktop_Digital_Signature_Wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_Users_andrew_Desktop_Digital_Signature_Wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2__);
-/* src/content/widget/widget.svelte generated by Svelte v3.6.7 */
+/* harmony import */ var _Users_andrew_Desktop_digital_signature_wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./content/widget/widget.svelte.css */ "./content/widget/widget.svelte.css");
+/* harmony import */ var _Users_andrew_Desktop_digital_signature_wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_Users_andrew_Desktop_digital_signature_wallet_src_content_widget_widget_svelte_css__WEBPACK_IMPORTED_MODULE_2__);
+/* src/content/widget/widget.svelte generated by Svelte v3.6.11 */
 
 
 

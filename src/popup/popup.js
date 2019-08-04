@@ -15,12 +15,10 @@ $(document).ready(function() {
     });
 
     $("#fileInput").on("change", async(e)=> {
+        let password = document.getElementById('password').value;
         let fileInput = document.getElementById("fileInput");
-        console.log(file);
+        // dont correctly work
         let file = fileInput.files[0]
-        //let file = e.target.files[0];
-        console.log(file);
-        //let base64 = await this.application.getBase64FromFile(file);
         let privatKey = await new Promise((resolve, reject) => {
 			chrome.runtime.sendMessage({"action": (Actions.getBackground().getPrivatKey), "data": file}, response => {
   				resolve(response)
@@ -30,19 +28,15 @@ $(document).ready(function() {
         chrome.storage.local.set({'privatKey': privatKey}, function() {
             console.log('PrivatKey saved');
         });
-        // let password = document.getElementById('password').value;
-        // if(!password || password===''){
-        //     alert('No Password Given');
-        // }else{
-        //     let file = e.target.files[0];
-        //     mnemonic = await walletInterface.readAndDecryptMnemonic(file,password);
-        //     if(mnemonic===""){
-        //         alert("Error: wrong password")
-        //     }else{
-        //         //localStorage.setItem("ciphertext",ciphertext)
-        //         console.log(mnemonic)
-        //     }
-        // }
+        // let data = {"password": password, "mnemonic": mnemonic}
+		// let ciphertext = await new Promise((resolve, reject) => {
+		// 	chrome.runtime.sendMessage({"action": (Actions.getBackground().getCiphertext), "data": data}, response => {
+  		// 		resolve(response)
+		// 	});					
+		// })
+		// chrome.storage.local.set({'ciphertext': ciphertext}, function() {
+      	// 	console.log('Ciphertext saved');
+    	// });
     });
 
     $("#generate-mnemonic").on("click", async ()=> {

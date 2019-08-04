@@ -2,11 +2,11 @@
 import EthereumTestLib from './EthereumTestLib';
 // import EthereumClassicLib = require('./EthereumClassicLib');
 // import BitcoinLib = require('./BitcoinLib');
-import BitcoinTestLib from './BitcoinTestLib';
+//import BitcoinTestLib from './BitcoinTestLib';
 // const BitcoinCashLib = require('./BitcoinCashLib');
 // const BitcoinCashTestLib = require('./BitcoinCashTestLib');
 // const LitecoinLib = require('./LitecoinLib');
-const LitecoinTestLib = require('./LitecoinTestLib');
+//const LitecoinTestLib = require('./LitecoinTestLib');
 // const DashLib = require('./DashLib');
 // const DashTestLib = require('./DashTestLib');
 // const Erc20Lib = require('./Erc20Lib');
@@ -42,7 +42,7 @@ export default class WalletInterface {
         this.generateAddressAndPrivkey = new GenerateAddressAndPrivkey(this, phrase)
         this.protocols = {};
         //this.protocols.btc = new BitcoinLib(this);
-        this.protocols.btctest = new BitcoinTestLib(this);
+        //this.protocols.btctest = new BitcoinTestLib(this);
         //this.protocols.bch = new BitcoinCashLib(this);
         // this.protocols.bchtest = new BitcoinCashTestLib(this);        
         // this.protocols.eth = new EthereumLib(this);
@@ -50,7 +50,7 @@ export default class WalletInterface {
         // this.protocols.etc = new EthereumClassicLib(this);        
         // this.protocols.erc20 = new Erc20Lib(this);
         // this.protocols.ltc = new LitecoinLib(this);
-        this.protocols.ltctest = new LitecoinTestLib(this);
+        //this.protocols.ltctest = new LitecoinTestLib(this);
         // this.protocols.dash = new DashLib(this);
         // this.protocols.dashtest = new DashTestLib(this);
         this.mnemonic = new Mnemonic();
@@ -68,25 +68,9 @@ export default class WalletInterface {
     getPrivatKey(file) {
         return new Promise(async(resolve,reject)=>{
             try{
-                //file = "first second"
-                console.log(typeof file, file);
                 file = JSON.stringify(file);
                 let privKey = await this.protocol.getPrivatKey(file);
                 return resolve(privKey);
-
-
-                //return resolve(this.fileService.readUploadedFile(file));
-                // var reader = new FileReader();
-                // reader.onload = async(e)=>{
-                //     var content = reader.result;
-                //     console.log("Content:", content)
-                //     return resolve(content);
-                // }
-                // reader.onerror = (e) => {
-                //     return reject(e);
-                // }
-                // console.log("File:", file)
-                // reader.readAsText(file);
             }catch(e){
                 return reject(e);
             }
@@ -137,6 +121,17 @@ export default class WalletInterface {
             try{
                 let balance = await this.protocol.getBalance(raw);
                 return resolve(balance);
+            }catch (e) {
+                return reject(e);
+            }
+        })
+    }
+
+    getAddress(){
+        return new Promise(async(resolve,reject)=>{
+            try{
+                let address = await this.protocol.getAddress();
+                return resolve(address);
             }catch (e) {
                 return reject(e);
             }

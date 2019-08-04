@@ -21198,18 +21198,16 @@ $(document).ready(function () {
     var _ref2 = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee2(e) {
-      var fileInput, file, privatKey;
+      var password, fileInput, file, privatKey;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              fileInput = document.getElementById("fileInput");
-              console.log(file);
-              file = fileInput.files[0]; //let file = e.target.files[0];
+              password = document.getElementById('password').value;
+              fileInput = document.getElementById("fileInput"); // dont correctly work
 
-              console.log(file); //let base64 = await this.application.getBase64FromFile(file);
-
-              _context2.next = 6;
+              file = fileInput.files[0];
+              _context2.next = 5;
               return new Promise(function (resolve, reject) {
                 chrome.runtime.sendMessage({
                   "action": Actions.getBackground().getPrivatKey,
@@ -21219,28 +21217,24 @@ $(document).ready(function () {
                 });
               });
 
-            case 6:
+            case 5:
               privatKey = _context2.sent;
               console.log(privatKey);
               chrome.storage.local.set({
                 'privatKey': privatKey
               }, function () {
                 console.log('PrivatKey saved');
-              }); // let password = document.getElementById('password').value;
-              // if(!password || password===''){
-              //     alert('No Password Given');
-              // }else{
-              //     let file = e.target.files[0];
-              //     mnemonic = await walletInterface.readAndDecryptMnemonic(file,password);
-              //     if(mnemonic===""){
-              //         alert("Error: wrong password")
-              //     }else{
-              //         //localStorage.setItem("ciphertext",ciphertext)
-              //         console.log(mnemonic)
-              //     }
-              // }
+              }); // let data = {"password": password, "mnemonic": mnemonic}
+              // let ciphertext = await new Promise((resolve, reject) => {
+              // 	chrome.runtime.sendMessage({"action": (Actions.getBackground().getCiphertext), "data": data}, response => {
+              // 		resolve(response)
+              // 	});					
+              // })
+              // chrome.storage.local.set({'ciphertext': ciphertext}, function() {
+              // 	console.log('Ciphertext saved');
+              // });
 
-            case 9:
+            case 8:
             case "end":
               return _context2.stop();
           }
