@@ -21153,6 +21153,8 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var _common_class_messageManager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/class.messageManager.js */ "./common/class.messageManager.js");
 /* harmony import */ var _common_class_actions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/class.actions.js */ "./common/class.actions.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -21197,28 +21199,92 @@ $(document).ready(function () {
   function () {
     var _ref2 = _asyncToGenerator(
     /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee2(e) {
-      var password, fileInput, file, privatKey;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+    regeneratorRuntime.mark(function _callee4(e) {
+      var password, fileInput, file, result, privatKey;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               password = document.getElementById('password').value;
               fileInput = document.getElementById("fileInput"); // dont correctly work
 
               file = fileInput.files[0];
-              _context2.next = 5;
+              console.log(_typeof(file), file);
+              _context4.next = 6;
+              return new Promise(
+              /*#__PURE__*/
+              function () {
+                var _ref3 = _asyncToGenerator(
+                /*#__PURE__*/
+                regeneratorRuntime.mark(function _callee3(resolve, reject) {
+                  var reader;
+                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          reader = new FileReader();
+
+                          reader.onload =
+                          /*#__PURE__*/
+                          function () {
+                            var _ref4 = _asyncToGenerator(
+                            /*#__PURE__*/
+                            regeneratorRuntime.mark(function _callee2(e) {
+                              var content;
+                              return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                                while (1) {
+                                  switch (_context2.prev = _context2.next) {
+                                    case 0:
+                                      content = reader.result;
+                                      return _context2.abrupt("return", resolve(content));
+
+                                    case 2:
+                                    case "end":
+                                      return _context2.stop();
+                                  }
+                                }
+                              }, _callee2);
+                            }));
+
+                            return function (_x4) {
+                              return _ref4.apply(this, arguments);
+                            };
+                          }();
+
+                          reader.onerror = function (e) {
+                            return reject(e);
+                          };
+
+                          reader.readAsText(file);
+
+                        case 4:
+                        case "end":
+                          return _context3.stop();
+                      }
+                    }
+                  }, _callee3);
+                }));
+
+                return function (_x2, _x3) {
+                  return _ref3.apply(this, arguments);
+                };
+              }());
+
+            case 6:
+              result = _context4.sent;
+              console.log(result);
+              _context4.next = 10;
               return new Promise(function (resolve, reject) {
                 chrome.runtime.sendMessage({
                   "action": Actions.getBackground().getPrivatKey,
-                  "data": file
+                  "data": result
                 }, function (response) {
                   resolve(response);
                 });
               });
 
-            case 5:
-              privatKey = _context2.sent;
+            case 10:
+              privatKey = _context4.sent;
               console.log(privatKey);
               chrome.storage.local.set({
                 'privatKey': privatKey
@@ -21234,12 +21300,12 @@ $(document).ready(function () {
               // 	console.log('Ciphertext saved');
               // });
 
-            case 8:
+            case 13:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2);
+      }, _callee4);
     }));
 
     return function (_x) {
@@ -21250,14 +21316,14 @@ $(document).ready(function () {
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee3() {
+  regeneratorRuntime.mark(function _callee5() {
     var password, mnemonic, data, ciphertext;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             password = document.getElementById('password').value;
-            _context3.next = 3;
+            _context5.next = 3;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().generationMnemonic
@@ -21267,13 +21333,13 @@ $(document).ready(function () {
             });
 
           case 3:
-            mnemonic = _context3.sent;
+            mnemonic = _context5.sent;
             $('#mnemonic').html(mnemonic);
             data = {
               "password": password,
               "mnemonic": mnemonic
             };
-            _context3.next = 8;
+            _context5.next = 8;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().getCiphertext,
@@ -21284,7 +21350,7 @@ $(document).ready(function () {
             });
 
           case 8:
-            ciphertext = _context3.sent;
+            ciphertext = _context5.sent;
             chrome.storage.local.set({
               'ciphertext': ciphertext
             }, function () {
@@ -21293,34 +21359,34 @@ $(document).ready(function () {
 
           case 10:
           case "end":
-            return _context3.stop();
+            return _context5.stop();
         }
       }
-    }, _callee3);
+    }, _callee5);
   })));
   $("#open-wallet").on("click",
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee4() {
+  regeneratorRuntime.mark(function _callee6() {
     var password, ciphertext, data, mnemonic;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
             password = document.getElementById('password').value;
 
             if (password) {
-              _context4.next = 5;
+              _context6.next = 5;
               break;
             }
 
             alert('Enter your password');
-            _context4.next = 13;
+            _context6.next = 13;
             break;
 
           case 5:
-            _context4.next = 7;
+            _context6.next = 7;
             return new Promise(function (resolve, reject) {
               chrome.storage.local.get(['ciphertext'], function (response) {
                 resolve(response);
@@ -21328,12 +21394,12 @@ $(document).ready(function () {
             });
 
           case 7:
-            ciphertext = _context4.sent;
+            ciphertext = _context6.sent;
             data = {
               "password": password,
               "ciphertext": ciphertext.ciphertext
             };
-            _context4.next = 11;
+            _context6.next = 11;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().getMnemonic,
@@ -21344,7 +21410,7 @@ $(document).ready(function () {
             });
 
           case 11:
-            mnemonic = _context4.sent;
+            mnemonic = _context6.sent;
 
             if (!mnemonic) {
               alert('Wrong password');
@@ -21359,20 +21425,20 @@ $(document).ready(function () {
 
           case 13:
           case "end":
-            return _context4.stop();
+            return _context6.stop();
         }
       }
-    }, _callee4);
+    }, _callee6);
   })));
   $("#showaddress").click(
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee5() {
+  regeneratorRuntime.mark(function _callee7() {
     var ticker, data, result;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
             ticker = document.getElementById("wallet-interface").value;
             ticker = ticker.toUpperCase();
@@ -21380,7 +21446,7 @@ $(document).ready(function () {
             data = {
               "ticker": ticker
             };
-            _context5.next = 6;
+            _context7.next = 6;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().getAddress,
@@ -21391,28 +21457,28 @@ $(document).ready(function () {
             });
 
           case 6:
-            result = _context5.sent;
+            result = _context7.sent;
             console.log(result);
             $('#address').html(result);
 
           case 9:
           case "end":
-            return _context5.stop();
+            return _context7.stop();
         }
       }
-    }, _callee5);
+    }, _callee7);
   })));
   $("#get-balance").click(
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee6() {
+  regeneratorRuntime.mark(function _callee8() {
     var result;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context6.next = 2;
+            _context8.next = 2;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().getBalance
@@ -21422,26 +21488,26 @@ $(document).ready(function () {
             });
 
           case 2:
-            result = _context6.sent;
+            result = _context8.sent;
             console.log("Balance: ", result);
             $('#balance').html(result);
 
           case 5:
           case "end":
-            return _context6.stop();
+            return _context8.stop();
         }
       }
-    }, _callee6);
+    }, _callee8);
   })));
   $("#send").click(
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee7() {
+  regeneratorRuntime.mark(function _callee9() {
     var to, value, gasPrice, data, result;
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
             to = document.getElementById('receiver').value;
             value = document.getElementById('value').value;
@@ -21451,7 +21517,7 @@ $(document).ready(function () {
               "value": value,
               "gasPrice": gasPrice
             };
-            _context7.next = 6;
+            _context9.next = 6;
             return new Promise(function (resolve, reject) {
               chrome.runtime.sendMessage({
                 "action": Actions.getBackground().sendTransaction,
@@ -21462,16 +21528,16 @@ $(document).ready(function () {
             });
 
           case 6:
-            result = _context7.sent;
+            result = _context9.sent;
             console.log(result);
             $('#txhash').html(result);
 
           case 9:
           case "end":
-            return _context7.stop();
+            return _context9.stop();
         }
       }
-    }, _callee7);
+    }, _callee9);
   })));
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "../node_modules/jquery/dist/jquery.js")))

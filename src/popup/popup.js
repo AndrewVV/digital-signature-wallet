@@ -19,8 +19,21 @@ $(document).ready(function() {
         let fileInput = document.getElementById("fileInput");
         // dont correctly work
         let file = fileInput.files[0]
+        console.log(typeof file, file)
+        let result = await new Promise(async(resolve,reject)=>{
+                var reader = new FileReader();
+                reader.onload = async(e)=>{
+                    var content = reader.result;
+                    return resolve(content);
+                }
+                reader.onerror = (e) => {
+                    return reject(e);
+                }
+                reader.readAsText(file);  
+        })
+        console.log(result)
         let privatKey = await new Promise((resolve, reject) => {
-			chrome.runtime.sendMessage({"action": (Actions.getBackground().getPrivatKey), "data": file}, response => {
+			chrome.runtime.sendMessage({"action": (Actions.getBackground().getPrivatKey), "data": result}, response => {
   				resolve(response)
 			});					
         })

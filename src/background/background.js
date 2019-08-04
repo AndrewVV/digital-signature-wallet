@@ -13,8 +13,6 @@ chrome.runtime.onMessage.addListener(
                     walletInterface.changeProtocol(request.data);
 					break;
 				case (Actions.getBackground().getPrivatKey):
-					console.log(request)
-					console.log(request.data)
 					result = await walletInterface.getPrivatKey(request.data);
 					console.log("PrivatKey:", result)
 					sendResponse(result);
