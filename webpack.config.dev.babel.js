@@ -9,7 +9,7 @@ module.exports = merge(common, {
             port: 8080, // Which port use to create the server
             reloadPage: true, // Force the reload of the page also
             entries: {
-                contentScript: 'content',
+                popup: 'popup',
                 background: 'background'
             }
         })

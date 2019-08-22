@@ -1,24 +1,21 @@
 {
-  "name": "dec-wallet",
+  "name": "dscw",
   "version": "1.0.0",
   "description": "Decentalized Wallet",
   "main": "src/popup.js",
   "scripts": {
-    "build": "webpack -p --config webpack.config.prod.babel.js",
-    "watch": "NODE_ENV=development webpack --config webpack.config.dev.babel.js --watch"
+    "build-dev": "webpack --config webpack.config.dev.babel.js",
+    "watch": "NODE_ENV=development webpack --config webpack.config.dev.babel.js --watch",
+    "build": "webpack --config webpack.config.prod.babel.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/"
+    "url": "https://github.com/AndrewVV/digital-signature-wallet"
   },
-  "keywords": [
-    "linkedin",
-    "endorse",
-    "bot"
-  ],
-  "author": "Blockchain Team",
+  "author": "AndrewVV",
   "license": "ISC",
   "dependencies": {
+    "bchaddrjs": "^0.4.3",
     "bitcoinjs-lib": "^5.1.2",
     "chrome-promise": "^3.0.5",
     "crypto-js": "^3.1.9-1",

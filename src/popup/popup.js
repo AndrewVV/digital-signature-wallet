@@ -1,7 +1,5 @@
-import MessageManagerClass from '../common/class.messageManager.js';
 import ActionsClass from '../common/class.actions.js';
 const Actions = new ActionsClass();
-//const MessageManager = new MessageManagerClass();
 
 $(document).ready(function() {
     console.log( "ready!" );
@@ -17,7 +15,7 @@ $(document).ready(function() {
     $("#fileInput").on("change", async(e)=> {
         let password = document.getElementById('password').value;
         let fileInput = document.getElementById("fileInput");
-        // dont correctly work
+
         let file = fileInput.files[0]
         console.log(typeof file, file)
         let result = await new Promise(async(resolve,reject)=>{
@@ -31,7 +29,20 @@ $(document).ready(function() {
                 }
                 reader.readAsText(file);  
         })
-        console.log(result)
+        console.log(typeof result, result)
+        let res = await utf8_from_str(result)
+        console.log("tut res", res)
+        function utf8_from_str(s) {
+            for(var i=0, enc = encodeURIComponent(s), a = []; i < enc.length;) {
+                if(enc[i] === '%') {
+                    a.push(parseInt(enc.substr(i+1, 2), 16))
+                    i += 3
+                } else {
+                    a.push(enc.charCodeAt(i++))
+                }
+            }
+            return a
+        }
         let privatKey = await new Promise((resolve, reject) => {
 			chrome.runtime.sendMessage({"action": (Actions.getBackground().getPrivatKey), "data": result}, response => {
   				resolve(response)

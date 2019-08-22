@@ -151,154 +151,6 @@ __webpack_require__(/*! regenerator-runtime/runtime */ "../node_modules/regenera
 
 /***/ }),
 
-/***/ "../node_modules/chrome-promise/chrome-promise.js":
-/*!********************************************************!*\
-  !*** ../node_modules/chrome-promise/chrome-promise.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*!
- * chrome-promise
- * https://github.com/tfoxy/chrome-promise
- *
- * Copyright 2015 Tomás Fox
- * Released under the MIT license
- */
-
-(function(root, factory) {
-  if (true) {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
-    module.exports = factory(this || root);
-  } else { var name, script; }
-}(typeof self !== 'undefined' ? self : this, function(root) {
-  'use strict';
-  var slice = Array.prototype.slice,
-      hasOwnProperty = Object.prototype.hasOwnProperty;
-
-  // Temporary hacky fix to make TypeScript `import` work
-  ChromePromise.default = ChromePromise;
-
-  return ChromePromise;
-
-  ////////////////
-
-  function ChromePromise(options) {
-    options = options || {};
-    var chrome = options.chrome || root.chrome;
-    var Promise = options.Promise || root.Promise;
-    var runtime = chrome.runtime;
-    var self = this;
-    if (!self) throw new Error('ChromePromise must be called with new keyword');
-
-    fillProperties(chrome, self);
-
-    if (chrome.permissions) {
-      chrome.permissions.onAdded.addListener(permissionsAddedListener);
-    }
-
-    ////////////////
-
-    function setPromiseFunction(fn, thisArg) {
-
-      return function() {
-        var args = slice.call(arguments);
-
-        return new Promise(function(resolve, reject) {
-          args.push(callback);
-
-          fn.apply(thisArg, args);
-
-          function callback() {
-            var err = runtime.lastError;
-            var results = slice.call(arguments);
-            if (err) {
-              reject(err);
-            } else {
-              switch (results.length) {
-                case 0:
-                  resolve();
-                  break;
-                case 1:
-                  resolve(results[0]);
-                  break;
-                default:
-                  resolve(results);
-              }
-            }
-          }
-        });
-
-      };
-
-    }
-
-    function fillProperties(source, target) {
-      for (var key in source) {
-        if (hasOwnProperty.call(source, key)) {
-          var val;
-          // Sometime around Chrome v71, certain deprecated methods on the
-          // extension APIs started using proxies to throw an error if the
-          // deprecated methods were accessed, regardless of whether they
-          // were invoked or not.  That would cause this code to throw, even
-          // if no one was actually invoking that method.
-          try {
-            val = source[key];
-          } catch(err) {
-           continue;
-          }
-          var type = typeof val;
-
-          if (type === 'object' && !(val instanceof ChromePromise)) {
-            target[key] = {};
-            fillProperties(val, target[key]);
-          } else if (type === 'function') {
-            target[key] = setPromiseFunction(val, source);
-          } else {
-            target[key] = val;
-          }
-        }
-      }
-    }
-
-    function permissionsAddedListener(perms) {
-      if (perms.permissions && perms.permissions.length) {
-        var approvedPerms = {};
-        perms.permissions.forEach(function(permission) {
-          var api = /^[^.]+/.exec(permission);
-          if (api in chrome) {
-            approvedPerms[api] = chrome[api];
-          }
-        });
-        fillProperties(approvedPerms, self);
-      }
-    }
-  }
-}));
-
-
-/***/ }),
-
-/***/ "../node_modules/chrome-promise/index.js":
-/*!***********************************************!*\
-  !*** ../node_modules/chrome-promise/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ChromePromise = __webpack_require__(/*! ./chrome-promise */ "../node_modules/chrome-promise/chrome-promise.js");
-
-var chromep = new ChromePromise();
-// Temporary hacky fix to make TypeScript `import` work
-chromep.default = chromep;
-
-module.exports = chromep;
-
-
-/***/ }),
-
 /***/ "../node_modules/core-js/es6/index.js":
 /*!********************************************!*\
   !*** ../node_modules/core-js/es6/index.js ***!
@@ -21052,96 +20904,6 @@ function () {
 
 /***/ }),
 
-/***/ "./common/class.messageManager.js":
-/*!****************************************!*\
-  !*** ./common/class.messageManager.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MessageManager; });
-/* harmony import */ var chrome_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chrome-promise */ "../node_modules/chrome-promise/index.js");
-/* harmony import */ var chrome_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chrome_promise__WEBPACK_IMPORTED_MODULE_0__);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-var MessageManager =
-/*#__PURE__*/
-function () {
-  function MessageManager() {
-    _classCallCheck(this, MessageManager);
-  }
-
-  _createClass(MessageManager, [{
-    key: "sendMessageToContent",
-    value: function sendMessageToContent(sender, action, data) {
-      chrome.tabs.sendMessage(sender.tab.id, this.getRequestDataFormat(action, data));
-    }
-  }, {
-    key: "sendMessageToBackgroundWithResponse",
-    value: function () {
-      var _sendMessageToBackgroundWithResponse = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(action, data) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                return _context.abrupt("return", chrome_promise__WEBPACK_IMPORTED_MODULE_0___default.a.runtime.sendMessage(this.getRequestDataFormat(action, data)));
-
-              case 1:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function sendMessageToBackgroundWithResponse(_x, _x2) {
-        return _sendMessageToBackgroundWithResponse.apply(this, arguments);
-      }
-
-      return sendMessageToBackgroundWithResponse;
-    }()
-  }, {
-    key: "sendMessageToBackground",
-    value: function sendMessageToBackground(action, data) {
-      chrome.runtime.sendMessage(this.getRequestDataFormat(action, data));
-    }
-  }, {
-    key: "sendMessageToPopup",
-    value: function sendMessageToPopup(action, data) {
-      chrome.runtime.sendMessage(this.getRequestDataFormat(action, data));
-    }
-  }, {
-    key: "getRequestDataFormat",
-    value: function getRequestDataFormat(action) {
-      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return {
-        action: action,
-        data: data
-      };
-    }
-  }]);
-
-  return MessageManager;
-}();
-
-
-
-/***/ }),
-
 /***/ "./popup/popup.js":
 /*!************************!*\
   !*** ./popup/popup.js ***!
@@ -21151,8 +20913,7 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var _common_class_messageManager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/class.messageManager.js */ "./common/class.messageManager.js");
-/* harmony import */ var _common_class_actions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/class.actions.js */ "./common/class.actions.js");
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var _common_class_actions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/class.actions.js */ "./common/class.actions.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -21160,9 +20921,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
-
-var Actions = new _common_class_actions_js__WEBPACK_IMPORTED_MODULE_1__["default"](); //const MessageManager = new MessageManagerClass();
-
+var Actions = new _common_class_actions_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
 $(document).ready(function () {
   console.log("ready!");
   var ticker = document.getElementById("wallet-interface").value;
@@ -21200,17 +20959,29 @@ $(document).ready(function () {
     var _ref2 = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee4(e) {
-      var password, fileInput, file, result, privatKey;
+      var password, fileInput, file, result, res, utf8_from_str, privatKey;
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              password = document.getElementById('password').value;
-              fileInput = document.getElementById("fileInput"); // dont correctly work
+              utf8_from_str = function _ref5(s) {
+                for (var i = 0, enc = encodeURIComponent(s), a = []; i < enc.length;) {
+                  if (enc[i] === '%') {
+                    a.push(parseInt(enc.substr(i + 1, 2), 16));
+                    i += 3;
+                  } else {
+                    a.push(enc.charCodeAt(i++));
+                  }
+                }
 
+                return a;
+              };
+
+              password = document.getElementById('password').value;
+              fileInput = document.getElementById("fileInput");
               file = fileInput.files[0];
               console.log(_typeof(file), file);
-              _context4.next = 6;
+              _context4.next = 7;
               return new Promise(
               /*#__PURE__*/
               function () {
@@ -21270,10 +21041,16 @@ $(document).ready(function () {
                 };
               }());
 
-            case 6:
+            case 7:
               result = _context4.sent;
-              console.log(result);
-              _context4.next = 10;
+              console.log(_typeof(result), result);
+              _context4.next = 11;
+              return utf8_from_str(result);
+
+            case 11:
+              res = _context4.sent;
+              console.log("tut res", res);
+              _context4.next = 15;
               return new Promise(function (resolve, reject) {
                 chrome.runtime.sendMessage({
                   "action": Actions.getBackground().getPrivatKey,
@@ -21283,7 +21060,7 @@ $(document).ready(function () {
                 });
               });
 
-            case 10:
+            case 15:
               privatKey = _context4.sent;
               console.log(privatKey);
               chrome.storage.local.set({
@@ -21300,7 +21077,7 @@ $(document).ready(function () {
               // 	console.log('Ciphertext saved');
               // });
 
-            case 13:
+            case 18:
             case "end":
               return _context4.stop();
           }

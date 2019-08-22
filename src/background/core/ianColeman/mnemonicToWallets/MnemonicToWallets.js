@@ -1,6 +1,6 @@
 const bitcoinjs = require("./bitcoinjs-3.3.2");
-const bchaddr = require("./bchaddrjs-0.2.1");
-const ethUtil = require("./ethereumjs-util");
+const bchaddr = require("bchaddrjs");
+const ethUtil = require("ethereumjs-util");
 const Mnemonic = require("./jsbip39");
 
 var mnemonic = new Mnemonic();
@@ -59,7 +59,7 @@ class MnemonicToWallets {
         var derivationPath = this.getDerivationPath();
         bip32ExtendedKey = this.calcBip32ExtendedKey(derivationPath);
     }
-    // сложная функция по формированию HD extendedKey с нужным Derivation Path
+
     calcBip32ExtendedKey(path) {
         var extendedKey = bip32RootKey;
         var pathBits = path.split("/");

@@ -1,9 +1,7 @@
 import WalletInterface from './libs/WalletInterface';
-import MessageManagerClass from '../common/class.messageManager.js';
 import ActionsClass from '../common/class.actions.js';
 let walletInterface = new WalletInterface();
 const Actions = new ActionsClass();
-const MessageManager = new MessageManagerClass();
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
