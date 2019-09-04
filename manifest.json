@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Digital Signature Wallet",
+  "name": "D-S-W",
   "description": "First digital signature wallet",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "default_locale": "en",
   "icons": {
     "128": "img/icon.png"
